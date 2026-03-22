@@ -12,17 +12,14 @@
   <pre id="output"></pre>
 
   <script>
-    async function send() {
-      const q = document.getElementById("q").value;
+async function send() {
+  const q = document.getElementById("q").value;
 
-      const res = await fetch(
-        `https://ai-agent-q16p.onrender.com/ask?q=${encodeURIComponent(q)}`,
-        { method: "POST" }
-      );
+  const res = await fetch(`https://ai-agent-q16p.onrender.com/ask?q=${q}`);
+  const data = await res.json();
 
-      const data = await res.json();
-      document.getElementById("output").innerText = data.response;
-    }
-  </script>
+  document.getElementById("output").innerText = data.response;
+}
+</script>
 </body>
 </html>
