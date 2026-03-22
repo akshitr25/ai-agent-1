@@ -1,33 +1,58 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-from config import SYSTEM_PROMPT
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-chat_history = [
-    {"role": "system", "content": SYSTEM_PROMPT}
-]
 
 def get_response(user_input):
-    # TOOL TRIGGER
-    if "total time" in user_input.lower():
-        return estimate_total_time(user_input)
-    chat_history.append({"role": "user", "content": user_input})
+    plan = planner_agent(user_input)
 
+    if "time" in user_input.lower():
+        time_info = executor_agent(plan)
+        # REMOVE any "Total Time" from LLM output
+        # plan = plan.split("Total Time")[0]
+        return plan + "\n\n" + time_info
+
+    return plan
+
+
+def planner_agent(user_input):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=chat_history
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                Break the user's goal into structured tasks.
+
+                Return:
+                1. Task name
+                2. Time required
+                3. Priority
+
+                DO NOT calculate or mention total time.
+                """
+            },
+            {"role": "user", "content": user_input}
+        ]
     )
 
-    reply = response.choices[0].message.content
+    return response.choices[0].message.content
 
-    chat_history.append({"role": "assistant", "content": reply})
 
-    return reply
+def executor_agent(plan):
+    return estimate_total_time(plan)
 
-def estimate_total_time(tasks_text):
-    # very simple logic for now
-    return "Estimated total time: 25-30 hours"
+import re
+
+def estimate_total_time(plan):
+    times = re.findall(r'(\d+)\s*hour', plan)
+    total = sum(map(int, times))
+
+    if total == 0:
+        return "Estimated total time: Not enough data"
+
+    return f"Estimated total time: {total} hours"

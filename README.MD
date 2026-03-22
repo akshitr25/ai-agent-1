@@ -1,56 +1,164 @@
-# 🤖 AI Task Assistant (Agent)
+# 🤖 AI Task Planner Agent (Multi-Agent System)
 
-A simple agentic AI system that takes user goals and converts them into structured, actionable tasks.
+A production-style AI system that converts user goals into structured task plans and computes total execution time using a hybrid architecture (LLM + deterministic logic).
 
-## 🚀 Features
+---
 
-* Goal → Task breakdown using LLM
-* Conversational memory (multi-turn interaction)
-* Structured output (task, time, priority)
-* Runs locally using Ollama (no API cost)
+## 🚀 Overview
+
+This project implements a **multi-agent AI system** with clear separation of responsibilities:
+
+* 🧠 **Planner Agent (LLM)** → Breaks user goals into structured tasks
+* ⚙️ **Executor Agent (Code)** → Computes total time deterministically
+* 🌐 **API Layer (FastAPI)** → Exposes the system as a backend service
+
+---
+
+## 🧠 Architecture
+
+```
+User Input
+   ↓
+FastAPI Endpoint (/ask)
+   ↓
+Planner Agent (LLM)
+   ↓
+Structured Task Plan
+   ↓
+Executor Agent (Regex-based logic)
+   ↓
+Final Response (Tasks + Total Time)
+```
+
+---
+
+## ✨ Features
+
+* Goal → structured task breakdown
+* Task-level time estimation using LLM
+* Deterministic total time calculation (no hallucination)
+* Multi-agent design (planner + executor)
+* REST API using FastAPI
+* Modular and scalable backend architecture
+
+---
 
 ## 🛠️ Tech Stack
 
 * Python
-* Ollama (Llama3)
-* Prompt Engineering
+* FastAPI
+* OpenAI API (LLM)
+* python-dotenv
+* Regex (for deterministic computation)
 
-## 🧠 How it works
+---
 
-1. User enters a goal
-2. Agent processes input using LLM
-3. Maintains conversation history
-4. Returns structured task plan
-
-## ▶️ Run Locally
-
-```bash
-pip install ollama
-ollama run llama3
-python main.py
-```
-
-## 📌 Example
-
-Input:
+## 📂 Project Structure
 
 ```
-Plan AWS certification
+ai-agent-1/
+├── app.py          # FastAPI API layer
+├── agent.py        # Planner + Executor logic
+├── config.py       # System prompts
+├── main.py         # CLI testing (optional)
+├── .env            # API keys (not committed)
+├── requirements.txt
 ```
 
-Output:
+---
+
+## ▶️ Running the Project
+
+### 1. Clone the repo
 
 ```
-1. Study fundamentals - 2 hrs - High
-2. Practice labs - 1 hr - High
+git clone https://github.com/<your-username>/ai-agent-1.git
+cd ai-agent-1
 ```
+
+---
+
+### 2. Install dependencies
+
+```
+python -m pip install -r requirements.txt
+```
+
+---
+
+### 3. Setup environment variables
+
+Create a `.env` file:
+
+```
+OPENAI_API_KEY=your_api_key_here
+```
+
+---
+
+### 4. Run the API
+
+```
+uvicorn app:app --reload
+```
+
+---
+
+### 5. Open Swagger UI
+
+```
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 🧪 Example
+
+### Input:
+
+```
+Plan AWS certification and include total time
+```
+
+### Output:
+
+```
+1. Task name: Research AWS Certification Options  
+   Time required: 2 hours  
+   Priority: Medium  
+
+...
+
+🔹 Estimated total time: 31 hours
+```
+
+---
+
+## 🧠 Key Design Decisions
+
+* ❌ Avoided relying on LLM for total time (reduces hallucination)
+* ✅ Used regex-based deterministic computation
+* ✅ Separated planning and execution into different agents
+* ✅ Designed API-first architecture for scalability
+
+---
 
 ## 📈 Future Improvements
 
-* Add tool usage (API calls)
-* Convert to FastAPI backend
-* Add persistent memory (DB)
+* Add persistent memory (database)
+* Integrate tool-calling frameworks (e.g., LangGraph)
+* Add frontend UI (React)
+* Deploy as a cloud service
+
+---
+
+## 💼 Resume Highlight
+
+> Built a multi-agent AI system using Python and FastAPI, combining LLM-based planning with deterministic execution logic to ensure reliable and scalable task automation.
+
+---
 
 ## 👤 Author
 
-Akshit Rathod
+**Akshit Rathod**
+Backend Engineer | Distributed Systems | AI Systems
