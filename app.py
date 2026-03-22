@@ -7,7 +7,7 @@ app = FastAPI()
 def home():
     return {"message": "AI Agent Running"}
 
-@app.post("/ask")
+@app.get("/ask")
 def ask(q: str):
     response = get_response(q)
     return {"response": response}
