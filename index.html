@@ -1,13 +1,28 @@
-<input id="q" placeholder="Enter goal">
-<button onclick="send()">Ask</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Task Planner</title>
+</head>
+<body>
+  <h2>AI Task Planner</h2>
 
-<script>
-async function send() {
-  const q = document.getElementById("q").value;
-  const res = await fetch(`https://your-app.onrender.com/ask?q=${q}`, {
-    method: "POST"
-  });
-  const data = await res.json();
-  alert(data.response);
-}
-</script>
+  <input id="q" placeholder="Enter your goal" style="width:300px;" />
+  <button onclick="send()">Ask</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    async function send() {
+      const q = document.getElementById("q").value;
+
+      const res = await fetch(
+        `https://ai-agent-q16p.onrender.com/ask?q=${encodeURIComponent(q)}`,
+        { method: "POST" }
+      );
+
+      const data = await res.json();
+      document.getElementById("output").innerText = data.response;
+    }
+  </script>
+</body>
+</html>
